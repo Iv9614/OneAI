@@ -65,6 +65,12 @@ mdurl==0.1.2
     # via markdown-it-py
 passlib==1.7.4
     # via wisdomgrade (pyproject.toml)
+psycopg==3.2.6
+    # via wisdomgrade (pyproject.toml)
+psycopg-binary==3.2.6 ; implementation_name != 'pypy'
+    # via psycopg
+psycopg2-binary==2.9.10
+    # via wisdomgrade (pyproject.toml)
 pydantic==2.10.6
     # via
     #   wisdomgrade (pyproject.toml)
@@ -122,12 +128,15 @@ typing-extensions==4.12.2
     #   alembic
     #   anyio
     #   fastapi
+    #   psycopg
     #   pydantic
     #   pydantic-core
     #   pydantic-extra-types
     #   rich-toolkit
     #   sqlalchemy
     #   typer
+tzdata==2025.2 ; sys_platform == 'win32'
+    # via psycopg
 uvicorn==0.34.0
     # via
     #   fastapi
