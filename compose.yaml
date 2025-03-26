@@ -2,7 +2,7 @@ services:
   db:
     image: postgres:latest
     restart: always
-    container_name: SENAO_DATABASE
+    container_name: OneAI-db
     ports:
       - "5432:5432" 
     environment:
