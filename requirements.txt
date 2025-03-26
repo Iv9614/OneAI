@@ -63,6 +63,8 @@ markupsafe==3.0.2
     #   mako
 mdurl==0.1.2
     # via markdown-it-py
+orjson==3.10.16
+    # via wisdomgrade (pyproject.toml)
 passlib==1.7.4
     # via wisdomgrade (pyproject.toml)
 psycopg==3.2.6
@@ -139,6 +141,7 @@ tzdata==2025.2 ; sys_platform == 'win32'
     # via psycopg
 uvicorn==0.34.0
     # via
+    #   wisdomgrade (pyproject.toml)
     #   fastapi
     #   fastapi-cli
 uvloop==0.21.0 ; platform_python_implementation != 'PyPy' and sys_platform != 'cygwin' and sys_platform != 'win32'
