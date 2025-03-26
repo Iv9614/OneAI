@@ -8,6 +8,7 @@ from fastapi.routing import APIRoute
 from app.apis import route
 
 from .core.config import settings
+from .lifespan import lifespan
 
 logger: Logger = getLogger(__name__)
 
@@ -20,6 +21,7 @@ def custom_generate_unique_id(route: APIRoute) -> str:
 
 app: FastAPI = FastAPI(
     title=settings.project.name,
+    lifespan=lifespan,
     generate_unique_id_function=custom_generate_unique_id,
     default_response_class=ORJSONResponse,
     swagger_ui_parameters={

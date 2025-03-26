@@ -1,0 +1,17 @@
+services:
+  db:
+    image: postgres:latest
+    restart: always
+    container_name: SENAO_DATABASE
+    ports:
+      - "5432:5432" 
+    environment:
+      POSTGRES_DB: ${DATABASE__DATABASE}
+      POSTGRES_USER: ${DATABASE__USER}
+      POSTGRES_PASSWORD: ${DATABASE__PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+ 
