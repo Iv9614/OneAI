@@ -1,7 +1,8 @@
 from logging import Logger
 from logging import getLogger
 
-from .urls import UrlsBase
+from .crawler import Crawler
+from .user import User
 
 logger: Logger = getLogger(__name__)
 
@@ -15,7 +16,8 @@ logger: Logger = getLogger(__name__)
 
 # Order by table name, and add comments to make it easier to find the model you need.
 __all__ = [
-    "UrlsBase",  # URLs Base
+    "User",  # User
+    "Crawler",  # Crawler
 ]
 
 logger.info("All database models are imported")
