@@ -2,6 +2,7 @@ from logging import Logger
 from logging import getLogger
 from pathlib import Path
 
+from pydantic import EmailStr
 from pydantic import PostgresDsn
 from pydantic import SecretStr
 from pydantic import computed_field
@@ -16,7 +17,7 @@ logger: Logger = getLogger(__name__)
 _PROJECT_DIR: Path = Path(__file__).parent.parent.parent
 
 
-class SenaoSettings(BaseSettings):
+class BaseSettings(BaseSettings):
     model_config = SettingsConfigDict(
         extra="ignore",
     )
@@ -27,11 +28,11 @@ class SenaoSettings(BaseSettings):
         self.__init__()
 
 
-class ProjectSetting(SenaoSettings):
+class ProjectSetting(BaseSettings):
     name: str = "Senao"
 
 
-class DatabaseSettings(SenaoSettings):
+class DatabaseSettings(BaseSettings):
     server: str
     port: int = 5432
     user: str = "postgres"
@@ -51,7 +52,14 @@ class DatabaseSettings(SenaoSettings):
         )
 
 
-class Settings(SenaoSettings):
+class InitSettings(BaseSettings):
+    username: str
+    email: EmailStr
+    password: SecretStr
+    fullname: str
+
+
+class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         case_sensitive=False,
         env_file=".env",
@@ -63,6 +71,7 @@ class Settings(SenaoSettings):
 
     PROJECT_DIR: Path = _PROJECT_DIR
 
+    init: InitSettings
     project: ProjectSetting
     database: DatabaseSettings
 

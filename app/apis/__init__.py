@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
-from app.apis.routes import urls
+from app.apis.routes import crawlers
 
 route = APIRouter()
 
-route.include_router(urls.router, prefix="/urls", tags=["urls"])
+route.include_router(crawlers.router, prefix="/crawlers")
