@@ -11,10 +11,17 @@ anyio==4.9.0
     #   watchfiles
 arrow==1.3.0
     # via wisdomgrade (pyproject.toml)
+bcrypt==4.3.0
+    # via wisdomgrade (pyproject.toml)
+beautifulsoup4==4.13.3
+    # via wisdomgrade (pyproject.toml)
 certifi==2025.1.31
     # via
     #   httpcore
     #   httpx
+    #   requests
+charset-normalizer==3.4.1
+    # via requests
 click==8.1.8
     # via
     #   rich-toolkit
@@ -51,6 +58,7 @@ idna==3.10
     #   anyio
     #   email-validator
     #   httpx
+    #   requests
 jinja2==3.1.6
     # via fastapi
 mako==1.3.9
@@ -98,6 +106,8 @@ python-multipart==0.0.20
     # via fastapi
 pyyaml==6.0.2
     # via uvicorn
+requests==2.32.3
+    # via wisdomgrade (pyproject.toml)
 rich==13.9.4
     # via
     #   rich-toolkit
@@ -110,6 +120,8 @@ six==1.17.0
     # via python-dateutil
 sniffio==1.3.1
     # via anyio
+soupsieve==2.6
+    # via beautifulsoup4
 sqlalchemy==2.0.39
     # via
     #   alembic
@@ -129,6 +141,7 @@ typing-extensions==4.12.2
     # via
     #   alembic
     #   anyio
+    #   beautifulsoup4
     #   fastapi
     #   psycopg
     #   pydantic
@@ -139,6 +152,8 @@ typing-extensions==4.12.2
     #   typer
 tzdata==2025.2 ; sys_platform == 'win32'
     # via psycopg
+urllib3==2.3.0
+    # via requests
 uvicorn==0.34.0
     # via
     #   wisdomgrade (pyproject.toml)
