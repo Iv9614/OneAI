@@ -1,7 +1,11 @@
 from logging import Logger
 from logging import getLogger
 from pathlib import Path
+from typing import Annotated
+from typing import Any
 
+from pydantic import AnyUrl
+from pydantic import BeforeValidator
 from pydantic import EmailStr
 from pydantic import PostgresDsn
 from pydantic import SecretStr
@@ -15,6 +19,14 @@ from pydantic_settings import YamlConfigSettingsSource
 logger: Logger = getLogger(__name__)
 
 _PROJECT_DIR: Path = Path(__file__).parent.parent.parent
+
+
+def parse_cors(v: Any) -> list[str] | str:
+    if isinstance(v, str) and not v.startswith("["):
+        return [i.strip() for i in v.split(",")]
+    elif isinstance(v, list | str):
+        return v
+    raise ValueError(v)
 
 
 class BaseSettings(BaseSettings):
@@ -74,6 +86,13 @@ class Settings(BaseSettings):
     init: InitSettings
     project: ProjectSetting
     database: DatabaseSettings
+
+    BACKEND_CORS_ORIGINS: Annotated[list[AnyUrl] | str, BeforeValidator(parse_cors)] = []
+
+    @computed_field  # type: ignore[prop-decorator]
+    @property
+    def all_cors_origins(self) -> list[str]:
+        return [str(origin).rstrip("/") for origin in self.BACKEND_CORS_ORIGINS]
 
     @classmethod
     def settings_customise_sources(

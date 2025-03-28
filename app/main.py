@@ -6,7 +6,9 @@ import orjson
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 from fastapi.routing import APIRoute
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
+from starlette.middleware.cors import CORSMiddleware
 
 from app.apis import route
 
@@ -35,6 +37,8 @@ class CustomORJSONResponse(ORJSONResponse):
         return super().render(content)
 
 
+# https://github.com/hitobito-inc-taiwan-branch/be_nicetomeetyou
+
 app: FastAPI = FastAPI(
     title=settings.project.name,
     lifespan=lifespan,
@@ -48,5 +52,17 @@ app: FastAPI = FastAPI(
     },
 )
 
+app.mount("/static", StaticFiles(directory="static"), name="index")
+
+
+# Set all CORS enabled origins
+if settings.all_cors_origins:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.all_cors_origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
 app.include_router(route, prefix="/v1")
