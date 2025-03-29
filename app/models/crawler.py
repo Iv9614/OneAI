@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING
 
+from pydantic import BaseModel
+from pydantic import HttpUrl
 from sqlalchemy_utils.types.arrow import ArrowType
 from sqlmodel import Field
 from sqlmodel import Relationship
@@ -10,6 +12,14 @@ from .common import DatetimeMixin
 
 if TYPE_CHECKING:
     from .user import User
+
+
+class CrawlNewsSchema(BaseModel):
+    url: HttpUrl = Field(
+        title="URL",
+        description="The URL of the news website to crawl.",
+        default="https://tw-nba.udn.com/nba/index",
+    )
 
 
 class CrawlerBase(SQLModel):
