@@ -9,8 +9,8 @@ from bs4 import BeautifulSoup
 from fastapi import HTTPException
 from pydantic import HttpUrl
 from sqlalchemy.exc import OperationalError
-from sqlmodel import Session
 from sqlmodel import delete
+from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.models.crawler import Crawler
 from app.models.crawler import NewsItem
@@ -62,22 +62,22 @@ def parse_news_time(news_time: str) -> arrow.Arrow:
     return parse_time
 
 
-def delete_all_news(session: Session) -> None:
+async def delete_all_news(session: AsyncSession) -> None:
     """
     Delete all news items from the database.
     """
     try:
-        session.exec(delete(Crawler))
-        session.commit()
+        await session.exec(delete(Crawler))
+        await session.commit()
 
     except OperationalError as e:
         logger.error("Delete news failed: %s", e)
-        session.rollback()
+        await session.rollback()
 
     logger.info("Successfully deleted all news items.")
 
 
-async def fetch_news(*, session: Session, url: HttpUrl) -> list[NewsItem]:
+async def fetch_news(*, session: AsyncSession, url: HttpUrl) -> list[NewsItem]:
     news_list: list = []
 
     response = requests.get(url, timeout=5)

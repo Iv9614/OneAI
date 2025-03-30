@@ -6,7 +6,7 @@ from fastapi import APIRouter
 
 from app.apis.deps.news import GetNewsDep
 from app.apis.deps.news import GetNewsListDep
-from app.apis.deps.session import SessionDep
+from app.apis.deps.session import AsyncSessionDep
 from app.models.crawler import Crawler
 from app.models.crawler import CrawlNewsSchema
 from app.models.crawler import NewsPublic
@@ -23,7 +23,7 @@ logger: Logger = getLogger(__name__)
 
 
 @router.post("", response_model=SuccessMessage[str])
-async def crawl_news(session: SessionDep, crawl_in: CrawlNewsSchema) -> None:
+async def crawl_news(session: AsyncSessionDep, crawl_in: CrawlNewsSchema) -> None:
     """
     Fetch target news websites and fetch news items.
     """
