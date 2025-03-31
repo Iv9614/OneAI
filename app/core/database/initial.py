@@ -2,29 +2,17 @@ import logging
 
 from sqlmodel import Session
 
-from app.core.config import settings
-from app.core.security import get_password_hash
-from app.models.user import User
-from app.models.user import UserCreate
+from app.crud.crawler import create_feature_news
+from app.crud.user import create_user
 
 logger = logging.getLogger(__name__)
 
 
 async def inject_initial_data(*, session: Session) -> None:
-    create_user_obj: UserCreate = UserCreate(
-        email=settings.init.email,
-        username=settings.init.username,
-        password=settings.init.password.get_secret_value(),
-        full_name=settings.init.fullname,
-    )
-    try:
-        init_user_obj: User = User.model_validate(
-            create_user_obj, update={"hashed_password": get_password_hash(create_user_obj.password)}
-        )
+    # Inject init user
+    logger.info("Injecting initial user...")
+    create_user(session=session)
 
-        session.add(init_user_obj)
-        session.flush()
-        session.commit()
-
-    except Exception as e:
-        logger.error(e)
+    # Inject init feature news
+    logger.info("Injecting initial feature news...")
+    await create_feature_news(session=session, target_url="https://tw-nba.udn.com/nba/index")

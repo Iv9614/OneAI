@@ -8,11 +8,9 @@ import requests
 from bs4 import BeautifulSoup
 from fastapi import HTTPException
 from pydantic import HttpUrl
-from sqlalchemy.exc import OperationalError
 from sqlmodel import Session
-from sqlmodel import delete
 
-from app.models.crawler import Crawler
+from app.crud.crawler import delete_all_news
 from app.models.crawler import NewsItem
 
 logger: Logger = getLogger(__name__)
@@ -33,9 +31,16 @@ PARSE_MIN_PATTERN = r"(\d+)分鐘"
 
 
 def parse_news_time(news_time: str) -> arrow.Arrow:
+    """
+    Use regex to parse the news time string and return an Arrow object.
+
+    :param news_time: The time string to parse.
+    :return: An Arrow object representing the parsed time.
+    """
+
     parse_time: arrow.Arrow = arrow.utcnow()
 
-    if re.findall("[\u4e00-\u9fa5]+", news_time):
+    if re.findall("[\u4e00-\u9fa5]+", news_time):  # Check if the string contains Chinese characters
         if match := re.search(PARSE_MIN_PATTERN, news_time):
             logger.info("found minute pattern: %s", match.group(0))
 
@@ -62,25 +67,20 @@ def parse_news_time(news_time: str) -> arrow.Arrow:
     return parse_time
 
 
-def delete_all_news(session: Session) -> None:
-    """
-    Delete all news items from the database.
-    """
-    try:
-        session.exec(delete(Crawler))
-        session.commit()
-
-    except OperationalError as e:
-        logger.error("Delete news failed: %s", e)
-        session.rollback()
-
-    logger.info("Successfully deleted all news items.")
-
-
 async def fetch_news(*, session: Session, url: HttpUrl) -> list[NewsItem]:
+    """
+    Fetch news from the given URL and return a list of NewsItem objects.
+
+    :param session: The database session to use.
+    :param url: The URL to fetch news from.
+
+    :return: A list of NewsItem objects.
+
+    """
+
     news_list: list = []
 
-    response = requests.get(url, timeout=5)
+    response = requests.get(url, headers=headers, timeout=5)
     response.encoding = "utf-8"
 
     if response.status_code // 100 != 2:
@@ -95,7 +95,7 @@ async def fetch_news(*, session: Session, url: HttpUrl) -> list[NewsItem]:
     featured_section: Tag = soup.find("div", class_="box_body")
 
     if featured_section:
-        logger.info("找到精選新聞區塊")
+        logger.info("Finding featured section.")
 
         news_items: Tag = featured_section.find_all("a")
 
@@ -110,6 +110,6 @@ async def fetch_news(*, session: Session, url: HttpUrl) -> list[NewsItem]:
             )
 
     else:
-        logger.error("未找到精選新聞區塊。")
+        logger.error("Not found featured section.")
 
     return news_list
