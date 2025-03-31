@@ -41,7 +41,7 @@ class BaseSettings(BaseSettings):
 
 
 class ProjectSetting(BaseSettings):
-    name: str = "Senao"
+    name: str = "OneAI"
 
 
 class DatabaseSettings(BaseSettings):
