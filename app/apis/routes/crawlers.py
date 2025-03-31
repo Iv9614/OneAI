@@ -27,7 +27,7 @@ async def crawl_news(session: SessionDep, crawl_in: CrawlNewsSchema) -> None:
     return SuccessMessage(data="Crawling completed.")
 
 
-@router.get("/list")
+@router.get("/list", response_model=SuccessMessage[list[NewsPublic]])
 async def get_news(all_news: GetNewsListDep) -> SuccessMessage[list[NewsPublic]]:
     """
     Get all news items.
@@ -35,7 +35,7 @@ async def get_news(all_news: GetNewsListDep) -> SuccessMessage[list[NewsPublic]]
     return SuccessMessage(data=all_news)
 
 
-@router.get("/{news_id}")
+@router.get("/{news_id}", response_model=SuccessMessage[NewsPublic])
 async def get_single_new(news: GetNewsDep) -> SuccessMessage[NewsPublic]:
     """
     Get a single news item.

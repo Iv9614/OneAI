@@ -38,21 +38,23 @@ def parse_news_time(news_time: str) -> arrow.Arrow:
     :return: An Arrow object representing the parsed time.
     """
 
-    parse_time: arrow.Arrow = arrow.utcnow()
-
     if re.findall("[\u4e00-\u9fa5]+", news_time):  # Check if the string contains Chinese characters
         if match := re.search(PARSE_MIN_PATTERN, news_time):
             logger.info("found minute pattern: %s", match.group(0))
 
             shift_time: int = int(match.group(1))
-
             parse_time = arrow.utcnow().shift(minutes=-shift_time)
 
         elif match := re.search(PARSE_HOUR_PATTERN, news_time):
             logger.info("found hour pattern: %s", match.group(0))
-            shift_time: int = int(match.group(1))
 
+            shift_time: int = int(match.group(1))
             parse_time = arrow.utcnow().shift(hours=-shift_time)
+
+        else:
+            logger.info("Not found pattern, set default time to now.")
+
+            parse_time: arrow.Arrow = arrow.utcnow()
 
     else:
         try:

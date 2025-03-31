@@ -1,6 +1,6 @@
 function fetchNewsList() {
     $.ajax({
-        url: 'http://127.0.0.1:8000/v1/crawlers/', 
+        url: 'http://127.0.0.1:8000/v1/crawlers/list/', 
         method: 'GET',
         success: function(response) {
             const newsData = response.data;
