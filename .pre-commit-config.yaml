@@ -1,0 +1,103 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+default_install_hook_types:
+  - pre-commit
+  - post-commit
+  - post-merge
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-merge-conflict
+        stages:
+          - pre-commit
+      - id: check-case-conflict
+        stages:
+          - pre-commit
+      - id: debug-statements
+        stages:
+          - pre-commit
+      - id: trailing-whitespace
+        stages:
+          - pre-commit
+      - id: end-of-file-fixer
+        stages:
+          - pre-commit
+      - id: check-yaml
+        stages:
+          - pre-commit
+      - id: check-json
+        stages:
+          - pre-commit
+      - id: check-added-large-files
+        stages:
+          - pre-commit
+        args: [ '--maxkb=1024' ]
+      - id: detect-private-key
+        stages:
+          - pre-commit
+      - id: end-of-file-fixer
+        stages:
+          - pre-commit
+      - id: mixed-line-ending
+        stages:
+          - pre-commit
+      - id: no-commit-to-branch
+        stages:
+          - pre-commit
+        args: [ --branch, master, --branch, develop ]
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.1
+    hooks:
+      - id: ruff
+        stages:
+          - pre-commit
+        args: [ --fix ]
+      - id: ruff-format
+        stages:
+          - pre-commit
+  - repo: https://github.com/crate-ci/typos
+    rev: typos-dict-v0.11.37
+    hooks:
+      - id: typos
+        stages:
+          - pre-commit
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    # uv version.
+    rev: 0.5.6
+    hooks:
+      # Compile requirements
+      - id: pip-compile
+        stages:
+          - pre-commit
+        args: [ pyproject.toml, -o, requirements.txt, -U , --universal ]
+        files: ^pyproject\.toml$
+        always_run: true
+      # Update the uv lockfile
+      - id: uv-lock
+        stages:
+          - pre-commit
+        args:
+          - --upgrade
+        always_run: true
+  - repo: local
+    hooks:
+      - id: uv-sync
+        name: Sync uv dependencies from lockfile
+        stages:
+          - post-commit
+          - post-merge
+        language: system
+        entry: uv sync
+        files: ^uv\.lock$
+        always_run: true
+#  - repo: https://github.com/pre-commit/mirrors-mypy
+#    rev: 'v1.13.0'  # Use the sha / tag you want to point at
+#    hooks:
+#      - id: mypy
+#        additional_dependencies:
+#          - pydantic
+#          - pydantic-settings
+#          - sqlmodel
+#          - sqlalchemy
+#          - fastapi
