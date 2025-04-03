@@ -5,14 +5,14 @@ from io import StringIO
 from logging import Logger
 from logging import getLogger
 
-from sqlmodel import Field
-from sqlmodel import SQLModel
-
 from alembic.config import Config
 from alembic.runtime.environment import EnvironmentContext
 from alembic.runtime.environment import MigrationContext
 from alembic.runtime.migration import MigrationStep
 from alembic.script import ScriptDirectory
+from sqlmodel import Field
+from sqlmodel import SQLModel
+
 from app.core.config import settings
 
 logger: Logger = getLogger(__name__)

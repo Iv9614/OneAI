@@ -1,7 +1,7 @@
 """Init. add user and crawler.
 
 Revision ID: 7d4225d30339
-Revises: 
+Revises:
 Create Date: 2025-03-27 17:18:44.882632
 
 """

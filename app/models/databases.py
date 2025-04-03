@@ -16,8 +16,8 @@ logger: Logger = getLogger(__name__)
 
 # Order by table name, and add comments to make it easier to find the model you need.
 __all__ = [
-    "User",  # User
     "Crawler",  # Crawler
+    "User",  # User
 ]
 
 logger.info("All database models are imported")

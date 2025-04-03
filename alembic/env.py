@@ -22,7 +22,7 @@ if config.config_file_name is not None:
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 # target_metadata = None
-# from myapp.mymodel import 
+# from myapp.mymodel import
 from app.core.database import metadata as target_metadata
 target_metadata = target_metadata
 
