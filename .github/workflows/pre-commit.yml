@@ -3,7 +3,10 @@ name: pre-commit
 on:
   # pull_request:
   push:
-    branches: [main, github-actions]
+    branches:
+      - "*"
+    
+    # branches: [main, github-actions]
 
 jobs:
   pre-commit:
