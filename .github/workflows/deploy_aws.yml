@@ -3,8 +3,7 @@ name: Deploy FastAPI to EC2
 on:
   push:
     branches:
-      - main  # 改成你的部署分支
-
+      - "github-action"  # 改成你的部署分支
 jobs:
   deploy:
     runs-on: ubuntu-latest
