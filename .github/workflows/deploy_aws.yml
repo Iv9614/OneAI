@@ -28,41 +28,9 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: jesus28713/oneai-api:latest 
+          tags: ${{ secrets.DOCKER_USERNAME }}/oneai-api:latest 
 
       - name: print docker image
         run: |
           echo " ---- build successful ---- "
-          echo "docker image: jesus28713/oneai-api:latest"
-
-  Deploy:
-    name: Deploy to EC2
-    runs-on: ubuntu-latest
-    
-    steps:
-      - uses: actions/checkout@v2 
-      - name: Deploy to EC2
-        env:
-            PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
-            HOSTNAME: ${{secrets.EC2_HOST}}
-            USER_NAME: ${{secrets.EC2_USER}}
-      
-        run: |
-          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} 
-    
-      - name: Install UV
-        run: |
-          echo "Installing uv if not present..."
-          if ! command -v uv &> /dev/null; then
-            curl -LsSf https://astral.sh/uv/install.sh | sh
-          fi
-
-      - name: Pull Docker Image
-        run: |
-          echo "Pulling Docker image..."
-          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} 
-          
-          docker pull jesus28713/oneai-api:latest
-
-          
+          echo "docker image: ${{ secrets.DOCKER_USERNAME }}/oneai-api:latest"
