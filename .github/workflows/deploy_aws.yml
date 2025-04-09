@@ -28,12 +28,12 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/oneai-api:${{ github.sha }}
-      
+          tags: jesus28713/oneai-api:latest 
+
       - name: print docker image
         run: |
           echo " ---- build successful ---- "
-          echo "docker image: ${{ secrets.DOCKER_USERNAME }}/oneai-api:${{ github.sha }}"
+          echo "docker image: jesus28713/oneai-api:latest"
 
   Deploy:
     name: Deploy to EC2
@@ -63,4 +63,6 @@ jobs:
           echo "Pulling Docker image..."
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} 
           
-          docker pull ${{ secrets.DOCKER_USERNAME }}/oneai-api:${{ github.sha }}
+          docker pull jesus28713/oneai-api:latest
+
+          
