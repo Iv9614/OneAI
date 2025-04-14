@@ -41,6 +41,12 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
       - uses: actions/checkout@v2 
       - name: Deploy to EC2
         env:
@@ -57,7 +63,7 @@ jobs:
             DATABASE__USER: ${{ vars.DATABASE__USER }}
             DATABASE__PASSWORD: ${{ vars.DATABASE__PASSWORD }}
             DATABASE__DATABASE: ${{ vars.DATABASE__DATABASE }}
-      
+
         run: |
           echo " $$$$$$$$$$$$$$$$$$$$$$$ "
           echo PROJECT__NAME: $PROJECT__NAME
