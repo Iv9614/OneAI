@@ -34,3 +34,63 @@ jobs:
         run: |
           echo " ---- build successful ---- "
           echo "docker image: ${{ secrets.DOCKER_USERNAME }}/oneai-api:latest"
+
+
+  Deploy:
+    name: Deploy to EC2
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v2 
+      - name: Deploy to EC2
+        env:
+            PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
+            HOSTNAME: ${{secrets.EC2_HOST}}
+            USER_NAME: ${{secrets.EC2_USER}}
+            PROJECT__NAME:  ${{ vars.PROJECT__NAME }}
+            INIT__EMAIL: ${{ vars.INIT__EMAIL }}
+            INIT__USERNAME: ${{ vars.INIT__USERNAME }}
+            INIT__PASSWORD: ${{ vars.INIT__PASSWORD }}
+            INIT__FULLNAME: ${{ vars.INIT__FULLNAME }}
+            DATABASE__SERVER: ${{ vars.DATABASE__SERVER }}
+            DATABASE__PORT: ${{ vars.DATABASE__PORT }}
+            DATABASE__USER: ${{ vars.DATABASE__USER }}
+            DATABASE__PASSWORD: ${{ vars.DATABASE__PASSWORD }}
+            DATABASE__DATABASE: ${{ vars.DATABASE__DATABASE }}
+      
+        run: |
+          echo " $$$$$$$$$$$$$$$$$$$$$$$ "
+          echo PROJECT__NAME: $PROJECT__NAME
+          echo INIT__EMAIL: $INIT__EMAIL
+          echo " $$$$$$$$$$$$$$$$$$$$$$$ "
+
+          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} 
+    
+      - name: Install UV
+        run: |
+          echo "Installing uv if not present..."
+          if ! command -v uv &> /dev/null; then
+            curl -LsSf https://astral.sh/uv/install.sh | sh
+          fi
+          echo "UV installed successfully"
+          
+      - name: Pull Docker Image
+        run: |
+          echo "Pulling Docker image..."
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} 
+          
+          docker stop oneai-api || true
+          docker rm oneai-api || true
+          
+
+          docker pull ${{ secrets.DOCKER_USERNAME }}/oneai-api:latest
+          echo "---- Docker image pulled successfully ----"
+
+          # 啟動新 container（視情況調整 port、環境變數等）
+          docker run -d \
+            --name oneai-api \
+            -p 8000:8000 \
+            ${{ secrets.DOCKER_USERNAME }}/oneai-api:latest
+
+          echo "---- Container deployed successfully ----"
