@@ -70,6 +70,9 @@ jobs:
           echo INIT__EMAIL: $INIT__EMAIL
           echo " $$$$$$$$$$$$$$$$$$$$$$$ "
 
+          echo "pwd  =========== $(pwd) ============"
+          echo "ls -al  =========== $(ls -al) ============"
+
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} 
           
@@ -79,7 +82,10 @@ jobs:
         run: |
           echo "------ Installing uv  on the server ------"
 
-          
+          echo " pwd =========== $(pwd) ============"
+          echo "ls -al =========== $(ls -al) ============"
+
+          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} 
           echo "=========  Successfully logged into the server ========"
 
@@ -93,7 +99,10 @@ jobs:
       - name: Pull Docker Image
         run: |
           echo "Pulling Docker image..."
-
+          echo "pwd  =========== $(pwd) ============"
+          echo "ls -al  =========== $(ls -al) ============"
+          
+          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} 
           echo "=========  Successfully logged into the server ========"
 
