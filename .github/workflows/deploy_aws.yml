@@ -115,30 +115,26 @@ jobs:
           echo "Pulling Docker image..."
                 
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} << 'EOF'
-            
-            echo "---- Print current path ----"
-            echo $(pwd)
-
+  
             docker stop oneai-api || true
             docker rm oneai-api || true
             
             docker pull ${{ secrets.DOCKER_USERNAME }}/oneai-api:latest
             echo "---- Docker image pulled successfully ----"
 
-            # 啟動新 container（視情況調整 port、環境變數等）
             docker run -d \
-              -e PROJECT__NAME=${{ vars.PROJECT__NAME }} \
-              -e INIT__EMAIL=${{ vars.INIT__EMAIL }} \
-              -e INIT__USERNAME=${{ vars.INIT__USERNAME }} \
-              -e INIT__PASSWORD=${{ vars.INIT__PASSWORD }} \
-              -e INIT__FULLNAME=${{ vars.INIT__FULLNAME }} \
-              -e DATABASE__SERVER=${{ vars.DATABASE__SERVER }} \
-              -e DATABASE__PORT=${{ vars.DATABASE__PORT }} \
-              -e DATABASE__USER=${{ vars.DATABASE__USER }} \
-              -e DATABASE__PASSWORD=${{ vars.DATABASE__PASSWORD }} \
-              -e DATABASE__DATABASE=${{ vars.DATABASE__DATABASE }} \
+              -e "PROJECT__NAME=${{ vars.PROJECT__NAME }}"\
+              -e "INIT__EMAIL=${{ vars.INIT__EMAIL }}"\
+              -e "INIT__USERNAME=${{ vars.INIT__USERNAME }}"\
+              -e "INIT__PASSWORD=${{ vars.INIT__PASSWORD }}"\
+              -e "INIT__FULLNAME=${{ vars.INIT__FULLNAME }}"\
+              -e "DATABASE__SERVER=${{ vars.DATABASE__SERVER }}"\
+              -e "DATABASE__PORT=${{ vars.DATABASE__PORT }}"\
+              -e "DATABASE__USER=${{ vars.DATABASE__USER }}"\
+              -e "DATABASE__PASSWORD=${{ vars.DATABASE__PASSWORD }}"\
+              -e "DATABASE__DATABASE=${{ vars.DATABASE__DATABASE }}"\
               --name oneai-api \
-              -p 8000:8000 \
+              -p 8000:80 \
               ${{ secrets.DOCKER_USERNAME }}/oneai-api:latest
 
             echo "---- Container deployed successfully ----" 
