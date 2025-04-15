@@ -86,9 +86,9 @@ jobs:
             sudo apt-get update
 
             sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
-            
+      
             sudo docker run hello-world
-
+            
           EOF
 
       - name: Install UV
@@ -111,14 +111,14 @@ jobs:
           echo "Pulling Docker image..."
                 
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} << 'EOF'
-            docker stop oneai-api || true
-            docker rm oneai-api || true
+            sudo docker stop oneai-api || true
+            sudo docker rm oneai-api || true
             
-            docker pull ${{ secrets.DOCKER_USERNAME }}/oneai-api:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/oneai-api:latest
             echo "---- Docker image pulled successfully ----"
 
             # 啟動新 container（視情況調整 port、環境變數等）
-            docker run -d \
+            sudo docker run -d \
               --name oneai-api \
               -p 8000:8000 \
               ${{ secrets.DOCKER_USERNAME }}/oneai-api:latest
