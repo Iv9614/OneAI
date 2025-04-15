@@ -71,11 +71,14 @@ jobs:
           echo " $$$$$$$$$$$$$$$$$$$$$$$ "
 
           echo "pwd  =========== $(pwd) ============"
-          echo "ls -al  =========== $(ls -al) ============"
 
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} 
+          echo "ls -al  =========== $(ls -al) ============"
           
+          echo '$$$$$$$$ private key $$$$$$$$ '
+          cat private_key
+
           echo "=========  Successfully logged into the server ========"
 
       - name: Install UV
@@ -85,7 +88,9 @@ jobs:
           echo " pwd =========== $(pwd) ============"
           echo "ls -al =========== $(ls -al) ============"
 
-          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+          echo '$$$$$$$$ private key $$$$$$$$ '
+          cat private_key
+
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} 
           echo "=========  Successfully logged into the server ========"
 
@@ -102,7 +107,10 @@ jobs:
           echo "pwd  =========== $(pwd) ============"
           echo "ls -al  =========== $(ls -al) ============"
           
-          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+          
+          echo '$$$$$$$$ private key $$$$$$$$ '
+          cat private_key
+          
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} 
           echo "=========  Successfully logged into the server ========"
 
