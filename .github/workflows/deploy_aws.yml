@@ -5,7 +5,6 @@ on:
     branches: "github-action"  # Change to your deployment branch
 
 env:
-  PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
   HOSTNAME: ${{secrets.EC2_HOST}}
   USER_NAME: ${{secrets.EC2_USER}}
   PROJECT__NAME:  ${{ vars.PROJECT__NAME }}
@@ -25,8 +24,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -62,12 +61,34 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - uses: actions/checkout@v2 
-      - name: Deploy to EC2
+      - uses: actions/checkout@v4
+      - name: Set up SSH key
+        env:
+          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
         run: |
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} << 'EOF'
-            echo "=========  Successfully logged into the server ========"
+          
+      - name: Install Docker
+        run: |
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME}  << 'EOF'
+           # Add Docker's official GPG key:
+            sudo apt-get update
+            sudo apt-get install ca-certificates curl
+            sudo install -m 0755 -d /etc/apt/keyrings
+            sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+            sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+            # Add the repository to Apt sources:
+            echo \
+              "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+              $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
+              sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+            sudo apt-get update
+
+            sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+            
+            sudo docker run hello-world
+
           EOF
 
       - name: Install UV
@@ -75,17 +96,14 @@ jobs:
           echo "------ Installing uv  on the server ------"
 
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME}  << 'EOF'
-            echo "=========  Successfully logged into the server ========"
-            
-            echo " pwd =========== $(pwd) ============"
-            touch ./Iamhere.txt
-            echo "ls -al =========== $(ls -al) ============"
-            
             echo "Installing uv if not present..."
+           
             if ! command -v uv &> /dev/null; then
               curl -LsSf https://astral.sh/uv/install.sh | sh
             fi
+
             echo "UV installed successfully"
+
           EOF
 
       - name: Pull Docker Image
@@ -93,8 +111,6 @@ jobs:
           echo "Pulling Docker image..."
                 
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} << 'EOF'
-            echo "=========  Successfully logged into the server ========"
-
             docker stop oneai-api || true
             docker rm oneai-api || true
             
