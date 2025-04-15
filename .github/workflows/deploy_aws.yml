@@ -4,6 +4,21 @@ on:
   push:
     branches: "github-action"  # Change to your deployment branch
 
+env:
+  PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
+  HOSTNAME: ${{secrets.EC2_HOST}}
+  USER_NAME: ${{secrets.EC2_USER}}
+  PROJECT__NAME:  ${{ vars.PROJECT__NAME }}
+  INIT__EMAIL: ${{ vars.INIT__EMAIL }}
+  INIT__USERNAME: ${{ vars.INIT__USERNAME }}
+  INIT__PASSWORD: ${{ vars.INIT__PASSWORD }}
+  INIT__FULLNAME: ${{ vars.INIT__FULLNAME }}
+  DATABASE__SERVER: ${{ vars.DATABASE__SERVER }}
+  DATABASE__PORT: ${{ vars.DATABASE__PORT }}
+  DATABASE__USER: ${{ vars.DATABASE__USER }}
+  DATABASE__PASSWORD: ${{ vars.DATABASE__PASSWORD }}
+  DATABASE__DATABASE: ${{ vars.DATABASE__DATABASE }}
+
 jobs:
   build:
     name: Build and Push Docker Image
@@ -49,21 +64,6 @@ jobs:
 
       - uses: actions/checkout@v2 
       - name: Deploy to EC2
-        env:
-            PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
-            HOSTNAME: ${{secrets.EC2_HOST}}
-            USER_NAME: ${{secrets.EC2_USER}}
-            PROJECT__NAME:  ${{ vars.PROJECT__NAME }}
-            INIT__EMAIL: ${{ vars.INIT__EMAIL }}
-            INIT__USERNAME: ${{ vars.INIT__USERNAME }}
-            INIT__PASSWORD: ${{ vars.INIT__PASSWORD }}
-            INIT__FULLNAME: ${{ vars.INIT__FULLNAME }}
-            DATABASE__SERVER: ${{ vars.DATABASE__SERVER }}
-            DATABASE__PORT: ${{ vars.DATABASE__PORT }}
-            DATABASE__USER: ${{ vars.DATABASE__USER }}
-            DATABASE__PASSWORD: ${{ vars.DATABASE__PASSWORD }}
-            DATABASE__DATABASE: ${{ vars.DATABASE__DATABASE }}
-
         run: |
           echo " $$$$$$$$$$$$$$$$$$$$$$$ "
           echo PROJECT__NAME: $PROJECT__NAME
