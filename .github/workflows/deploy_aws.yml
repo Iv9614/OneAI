@@ -93,8 +93,11 @@ jobs:
 
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} 
           echo "=========  Successfully logged into the server ========"
-
-        
+          
+          echo " pwd =========== $(pwd) ============"
+          echo "ls -al =========== $(ls -al) ============"
+          touch ./Iamhere.txt
+          
           echo "Installing uv if not present..."
           if ! command -v uv &> /dev/null; then
             curl -LsSf https://astral.sh/uv/install.sh | sh
