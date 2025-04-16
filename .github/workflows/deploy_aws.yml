@@ -134,7 +134,7 @@ jobs:
               -e "DATABASE__PASSWORD=${{ vars.DATABASE__PASSWORD }}"\
               -e "DATABASE__DATABASE=${{ vars.DATABASE__DATABASE }}"\
               --name oneai-api \
-              -p 8000:80 \
+              -p 8000:8000 \
               ${{ secrets.DOCKER_USERNAME }}/oneai-api:latest
 
             echo "---- Container deployed successfully ----" 
